@@ -10,11 +10,10 @@ jobs:
     name: Wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
-    continue-on-error: ${{ matrix.os == 'macos-13' }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-13, macos-14]
+        os: [ubuntu-latest, windows-latest, macos-14]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,10 +22,31 @@ jobs:
         shell: bash
         run: echo "SETUPTOOLS_SCM_PRETEND_VERSION=3.1.0+py312fix.${GITHUB_SHA::7}" >> $GITHUB_ENV
       - uses: pypa/cibuildwheel@v3.0
-        # build matrix / skip patterns letti da [tool.cibuildwheel] in pyproject.toml
+        env:
+          CIBW_ENVIRONMENT: "SETUPTOOLS_SCM_PRETEND_VERSION=${{ env.SETUPTOOLS_SCM_PRETEND_VERSION }}"
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          path: ./wheelhouse/*.whl
+
+  build_macos13:
+    name: Wheels on macos-13 (best-effort Intel)
+    runs-on: macos-13
+    timeout-minutes: 60
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set local version (PEP 440 local segment, PyPI-rejecting)
+        shell: bash
+        run: echo "SETUPTOOLS_SCM_PRETEND_VERSION=3.1.0+py312fix.${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - uses: pypa/cibuildwheel@v3.0
+        env:
+          CIBW_ENVIRONMENT: "SETUPTOOLS_SCM_PRETEND_VERSION=${{ env.SETUPTOOLS_SCM_PRETEND_VERSION }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-13
           path: ./wheelhouse/*.whl
 
   publish_release:
