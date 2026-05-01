@@ -6,6 +6,15 @@ Release Notes
 Next Release
 ------------
 
+Bug Fixes / Testing / Continuous Integration
+############################################
+
+- Add ``ruamel.yaml`` as explicit dependency (was used by CLI but undeclared).
+- Fix deprecated ``scipy.ndimage.interpolation`` import (use ``scipy.ndimage``).
+- Add ``sph_harm``/``sph_harm_y`` wrapper for SciPy ≥ 1.15 compatibility.
+- Raise ``requires-python`` to ``>=3.10`` (consistent with NumPy 2.1 requirements).
+- Add ``[lbp3d]`` optional extra for ``scipy``/``trimesh`` (LBP-3D filter dependencies).
+
 -----------------
 PyRadiomics 3.1.0
 -----------------
