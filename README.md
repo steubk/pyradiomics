@@ -1,3 +1,68 @@
+> ⚠️ **Unofficial community fork — Python 3.12 compatibility stop-gap.**
+>
+> This is a temporary fork of [AIM-Harvard/pyradiomics](https://github.com/AIM-Harvard/pyradiomics)
+> that ships five Python 3.12 / SciPy 1.15+ / NumPy 2 compatibility fixes which are
+> **not yet in any upstream release**. **Use the official `pyradiomics` package whenever it
+> works for you.** .
+>
+> Maintained by [steubk](https://github.com/steubk) — issues:
+> https://github.com/steubk/pyradiomics/issues — refs upstream issue
+> [AIM-Harvard/pyradiomics#949](https://github.com/AIM-Harvard/pyradiomics/issues/949)
+
+## Why this fork exists
+
+The current upstream release of pyradiomics (3.1.0 on PyPI, 2025-04) does not install or run
+on Python 3.12 with current SciPy/NumPy. This fork applies five targeted fixes:
+
+1. Adds `ruamel.yaml` as an explicit runtime dependency (used by the CLI but undeclared upstream).
+1. Replaces the deprecated `scipy.ndimage.interpolation` import with `scipy.ndimage`.
+1. Adds a `sph_harm` / `sph_harm_y` compatibility wrapper for SciPy ≥ 1.15.
+1. Raises `requires-python` to `>=3.10` (consistent with NumPy 2.1).
+1. Adds an `[lbp3d]` optional extra (`scipy`/`trimesh`) for the LBP-3D filter.
+
+See `CHANGES.rst` (`Next Release`) for the full diff summary.
+
+## How to install
+
+Prebuilt wheels for Linux / Windows / macOS, CPython 3.10–3.13, are published as a GitHub
+Release on this fork (`prebuilt-fix-py312`). Pip installs them via `--find-links` while
+fetching all runtime dependencies from PyPI as usual. The distribution name remains
+`pyradiomics` (same as upstream), so `import radiomics` works unchanged.
+
+### CLI
+
+```bash
+pip install \
+  --find-links https://github.com/steubk/pyradiomics/releases/expanded_assets/prebuilt-fix-py312 \
+  pyradiomics
+```
+
+### `requirements.txt`
+
+```
+--find-links https://github.com/steubk/pyradiomics/releases/expanded_assets/prebuilt-fix-py312
+pyradiomics
+```
+
+### Google Colab
+
+```sh
+!pip install --find-links https://github.com/steubk/pyradiomics/releases/expanded_assets/prebuilt-fix-py312 pyradiomics
+```
+
+The wheels are versioned `3.1.0+py312fix.<sha>` (PEP 440 local segment over latest upstream
+stable). Pip prefers them over plain `3.1.0`, so no `--pre` flag is needed; PyPI rejects
+uploads with `+local`, so these wheels can never be confused with an official PyPI release.
+
+## When upstream releases the fix
+
+1. The `prebuilt-fix-py312` GitHub Release will be deleted.
+1. Branch `prebuilt/py312` will be removed.
+1. Update your dependency to `pyradiomics>=A.B.C` (the upstream version with the fixes) and
+   drop the `--find-links` line.
+
+______________________________________________________________________
+
 # pyradiomics v3.1.0
 
 \<-- ## Build Status
