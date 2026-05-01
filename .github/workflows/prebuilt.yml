@@ -1,7 +1,9 @@
 name: Build prebuilt wheels (no PyPI upload)
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - prebuilt/py312
 
 jobs:
   build_wheels:
